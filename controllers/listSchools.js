@@ -3,8 +3,9 @@ import geoValidate from "../zod/geoValidate.js";
 
 const listSchools = (req,res) =>{
         try {
-            const {user_lat, user_lng} = req.body;
-            const {success} = geoValidate.safeParse(req.body);
+            const user_lat = parseFloat(req.query.user_lat);
+            const user_lng = parseFloat(req.query.user_lng);
+            const {success} = geoValidate.safeParse({user_lat,user_lng});
             if(success){
                 let q4 = `SELECT id, name, latitude, longitude, (6371 * acos(cos(radians(${user_lat})) * cos(radians(latitude)) * cos(radians(longitude) - radians(${user_lng})) + sin(radians(${user_lat})) * sin(radians(latitude)))) AS distance FROM schools ORDER BY distance ASC;`;
                 connection.query(q4,(error,result)=>{
